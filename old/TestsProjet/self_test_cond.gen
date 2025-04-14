@@ -1,0 +1,43 @@
+FICHIER TestsProjet/self_test_cond.gen : 
+
+   1  reserver        2
+   3  empiler        10
+   5  affecterg       0
+   7  empiler         5
+   9  affecterg       1
+  11  contenug        0
+  13  empiler         5
+  15  eg        
+  16  bsifaux        26
+  18  empiler         1
+  20  affecterg       0
+  22  bincond         0
+  24  bsifaux         0
+  26  contenug        0
+  28  empiler         7
+  30  eg        
+  31  bsifaux        41
+  33  empiler         2
+  35  affecterg       0
+  37  bincond        25
+  39  bsifaux         0
+  41  contenug        0
+  43  empiler        10
+  45  eg        
+  46  bsifaux        77
+  48  contenug        1
+  50  empiler         5
+  52  eg        
+  53  bsifaux        63
+  55  empiler         3
+  57  affecterg       0
+  59  bincond        78
+  61  bsifaux        77
+  63  contenug        1
+  65  empiler        10
+  67  eg        
+  68  bsifaux        74
+  70  empiler         4
+  72  affecterg       0
+  74  empiler         5
+  76  affecterg       0
