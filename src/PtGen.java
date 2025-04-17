@@ -199,7 +199,7 @@ public class PtGen {
 	static int val_tmp;
 	static boolean reserver;
 	static int tmp_boucle;
-
+	static int compteur_effixe;
 	/**
 	 * initialisations A COMPLETER SI BESOIN
 	 * -------------------------------------
@@ -227,7 +227,7 @@ public class PtGen {
 		compteurPara = 0;
 		compteurVarLoc = 0;
 		reserver = false;
-
+		compteur_effixe = 0;
 	} // initialisations
 
 	/**
@@ -668,7 +668,32 @@ public class PtGen {
 			
 			case 52:
 				int nb_para = tabSymb[affect_ident_tmp + 1].info;
+			break;
 
+			case 53 : //Verifie param effixe bon type
+				if (compteur_effixe != 0 ) {
+					if (tabSymb[affect_ident_tmp].type != tCour && tabSymb[affect_ident_tmp].categorie != VARLOCALE) {
+						UtilLex.messErr("Mauvais type en entrée de l'appel de la fonction : " + tabSymb[affect_ident_tmp].type + " et " + tCour);
+					} 
+					affect_ident_tmp++;
+					compteur_effixe--;
+				} else {
+					UtilLex.messErr("Trop de paramètres");
+				}
+				
+			break;
+			case 54 : //Verifie param effixe bon nombre	
+				if (compteur_effixe != 0) {
+					UtilLex.messErr("Pas assez de paramètre dans effixe");
+				}
+			break;
+
+			case 55 : //Setup et se place sur le premier param
+				affect_ident_tmp++;
+				nb_para = tabSymb[affect_ident_tmp].info;
+				compteur_effixe = nb_para;
+				affect_ident_tmp++;
+			break;
 			case 254:
 				po.produire(ARRET);
 				break;
