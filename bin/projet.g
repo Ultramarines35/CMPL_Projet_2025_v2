@@ -133,11 +133,11 @@ ecriture: 'ecrire' '(' expression {PtGen.pt(12);} ( ',' expression {PtGen.pt(12)
   
 affouappel
   : ident {PtGen.pt(13);} (    ':='  expression {PtGen.pt(14);}
-            |   (effixes (effmods)?)? {PtGen.pt(52);}
+            |   (effixes {PtGen.pt(55);} (effmods)?)? {PtGen.pt(52);}
            )
   ;
   
-effixes : '(' (expression  (',' expression  )*)? ')'
+effixes : '(' (expression {PtGen.pt(53);} (',' expression {PtGen.pt(53);} )*)? ')'
   ;
   
 effmods :'(' (ident {PtGen.pt(49);}  (',' ident {PtGen.pt(49);} )*)? ')'
