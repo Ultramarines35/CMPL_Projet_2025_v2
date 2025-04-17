@@ -1,0 +1,59 @@
+FICHIER TestsProjet\polyP12-exo-deuxprocs.gen : 
+
+   1  reserver        1
+   3  reserver        1
+   5  empiler         3
+   7  affecterl       4   0
+  10  empiler         0
+  12  affecterl       0   1
+  15  contenul        4   0
+  18  empiler         0
+  20  sup       
+  21  bsifaux        48
+  23  lirent    
+  24  affecterl       3   0
+  27  contenul        0   1
+  30  contenul        3   0
+  33  add       
+  34  affecterl       0   1
+  37  contenul        4   0
+  40  empiler         1
+  42  sous      
+  43  affecterl       4   0
+  46  bincond        21
+  48  arret     
+  49  reserver        2
+  51  contenul        0   0
+  54  affecterl       5   0
+  57  empiler         0
+  59  affecterl       6   0
+  62  contenul        5   0
+  65  empiler         0
+  67  sup       
+  68  bsifaux       102
+  70  empileradl     10   0
+  73  contenul        4   0
+  76  contenul        1   0
+  79  supeg     
+  80  bsifaux        91
+  82  contenul        6   0
+  85  empiler         1
+  87  add       
+  88  affecterl       6   0
+  91  contenul        5   0
+  94  empiler         1
+  96  sous      
+  97  affecterl       5   0
+ 100  bincond        68
+ 102  contenul        6   0
+ 105  affecterg       0
+ 107  arret     
+ 108  lirent    
+ 109  affecterg       0
+ 111  contenug        0
+ 113  empiler         1
+ 115  add       
+ 116  empiler        10
+ 118  contenug        0
+ 120  ecrent    
+ 121  arret     

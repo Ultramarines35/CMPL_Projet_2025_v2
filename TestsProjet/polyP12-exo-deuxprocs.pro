@@ -14,7 +14,7 @@ programme deuxprocs:	{exemple d'execution dans poly}
 	debut
 		i:=nbf; res:=0;
 		ttq i>0 faire
-			p1()(y);	
+			p1()(y);
 			si y>=barre alors res:=res+1 fsi;
 			i:=i-1
 		fait;

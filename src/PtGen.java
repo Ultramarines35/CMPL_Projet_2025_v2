@@ -117,7 +117,7 @@ public class PtGen {
 
 	// MERCI de renseigner ici un nom pour le trinome, constitue EXCLUSIVEMENT DE
 	// LETTRES
-	public static String trinome = "DELAPART Jules RECIPON Pierre"; // TODO
+	public static String trinome = "DELAPART Jules RECIPON Pierre ELOISE SINSEAU Ronald"; // TODO
 
 	private static int tCour; // type de l'expression compilee
 	private static int vCour; // sert uniquement lors de la compilation d'une valeur (entiere ou boolenne)
@@ -362,7 +362,7 @@ public class PtGen {
 			case 13: // Empiler ident pour l'affectation
 				// checker si pas constante et ils sont de meme type
 				afftabSymb();
-				affect_ident_tmp = presentIdent(bc);
+				affect_ident_tmp = presentIdent(1);
 				if(affect_ident_tmp == 0){
 					UtilLex.messErr("Ident n'est pas dans la table");
 				}
@@ -630,7 +630,7 @@ public class PtGen {
 			//po.modifier(pileRep.depiler(), po.getIpo()+1);
 			break;
 
-			case 49: // Appel des
+			case 49: // Appel des procédures (effmods)
 			int tmp_presentIdent = presentIdent(bc);
 				if (tmp_presentIdent != 0){
 					if(tabSymb[tmp_presentIdent].categorie == VARGLOBALE){
@@ -665,6 +665,9 @@ public class PtGen {
 				tCour = BOOL;
 				vCour = 1;
 				break;
+			
+			case 52:
+				int nb_para = tabSymb[affect_ident_tmp + 1].info;
 
 			case 254:
 				po.produire(ARRET);
