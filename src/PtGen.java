@@ -485,31 +485,6 @@ public class PtGen {
 
 			case 30:
 				ident_tmp = presentIdent(bc);
-				if (ident_tmp != 0) {
-					if (tabSymb[ident_tmp].categorie == VARGLOBALE) { // Nous devons differencier entre lirent et
-																		// lirebool
-						if (tabSymb[ident_tmp].type == ENT) {
-							po.produire(LIRENT);
-							po.produire(AFFECTERG);
-							po.produire(tabSymb[ident_tmp].info);
-						} else if (tabSymb[ident_tmp].type == BOOL) {
-							po.produire(LIREBOOL);
-							po.produire(AFFECTERG);
-							po.produire(tabSymb[ident_tmp].info);
-						} else
-							UtilLex.messErr("Erreur : Type de donnée lu inconnu");
-
-					} else {
-						UtilLex.messErr("Erreur : (lire) lecture de CONST impossible");
-					}
-
-					tCour = tabSymb[ident_tmp].type;
-				} else {
-					UtilLex.messErr("Erreur de type de Ident : Ident inconnu");
-				}
-
-
-
 				tCour = tabSymb[ident_tmp].type;
 				if(tCour == ENT) {
 					po.produire(LIRENT);
@@ -519,7 +494,6 @@ public class PtGen {
 				else{
 					UtilLex.messErr("Erreur : Type neutre détecté");
 				}
-
 				if(tabSymb[ident_tmp].categorie == VARLOCALE) {
 					po.produire(AFFECTERL);
 					po.produire(tabSymb[ident_tmp].info);
