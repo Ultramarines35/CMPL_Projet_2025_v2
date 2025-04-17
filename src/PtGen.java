@@ -285,12 +285,14 @@ public class PtGen {
 				break;
 
 			case 7: // Ajout TabSymb CONST
-				if (presentIdent(bc) == 0) {
-					placeIdent(UtilLex.numIdCourant, CONSTANTE, tCour, vCour);
-					if(bc != 1){
-					}
-				} else {
+				if (presentIdent(bc) != 0) {
 					UtilLex.messErr("Erreur : Double déclaration de Constante");
+				}
+				else{
+					placeIdent(UtilLex.numIdCourant, CONSTANTE, tCour, vCour);
+					if (bc != 1) {
+						compteurConstLoc++;
+					}
 				}
 				break;
 
@@ -361,10 +363,8 @@ public class PtGen {
 				// checker si pas constante et ils sont de meme type
 				afftabSymb();
 				affect_ident_tmp = presentIdent(bc);
-				if (affect_ident_tmp != 0) {
-					//affect_ident_tmp = UtilLex.numIdCourant;
-				} else {
-					UtilLex.messErr("Erreur : AFFOUAPPEL, ident n'est pas dans la table");
+				if(affect_ident_tmp == 0){
+					UtilLex.messErr("Ident n'est pas dans la table");
 				}
 				break;
 
@@ -374,32 +374,35 @@ public class PtGen {
 				}
 				else{
 					if(bc > 1){
-						if(tabSymb[presentIdent(1)].categorie == VARGLOBALE){
+						if(tabSymb[affect_ident_tmp].categorie == VARGLOBALE){
 							po.produire(AFFECTERG);
 							po.produire(tabSymb[affect_ident_tmp].info);
 						}
-						else if (tabSymb[presentIdent(bc)].categorie == VARLOCALE){
+						else if (tabSymb[affect_ident_tmp].categorie == VARLOCALE){
 							po.produire(AFFECTERL);
 							po.produire(tabSymb[affect_ident_tmp].info);
 							po.produire(0);
 						}
-						else if (tabSymb[presentIdent(bc)].categorie == CONSTANTE){
-							System.out.println("CEST LA ");
-						}
-						else if (tabSymb[presentIdent(bc)].categorie == PARAMMOD){
+						else if (tabSymb[affect_ident_tmp].categorie == PARAMMOD){
 							po.produire(AFFECTERL);
 							po.produire(tabSymb[affect_ident_tmp].info);
 							po.produire(1);
 						}
-						else if (tabSymb[presentIdent(1)].categorie == PROC) {
+						else if (tabSymb[affect_ident_tmp].categorie == PROC) {
 							System.out.println("mettre un int ici pour recuperer l'indice de la PROC");
 						}
+						else if (tabSymb[affect_ident_tmp].categorie == CONSTANTE){
+							UtilLex.messErr("Erreur : AFFOUAPPEL, ident est une constante");
+						}
+						else if (tabSymb[affect_ident_tmp].categorie == PARAMFIXE){
+							UtilLex.messErr("Erreur : AFFOUAPPEL, ident est un paramfixe");
+						}
 						else {
-							UtilLex.messErr("Erreur : AFFOUAPPEL, ident n'est ni une varlocale, ni une varglobale ni un paramod");
+							UtilLex.messErr("Erreur : AFFOUAPPEL,tabSymb indique que ident est def, ref ou privé");
 						}
 					}
 					else{
-						if(tabSymb[presentIdent(1)].categorie == VARGLOBALE){
+						if(tabSymb[affect_ident_tmp].categorie == VARGLOBALE){
 							po.produire(AFFECTERG);
 							po.produire(tabSymb[affect_ident_tmp].info);
 						}
@@ -577,7 +580,11 @@ public class PtGen {
 			case 42 ://Début proc
 				placeIdent(UtilLex.numIdCourant, PROC, NEUTRE, 0);
 				placeIdent(-1, PRIVEE, NEUTRE, 0);
+				
 				bc = it + 1;
+				compteurConstLoc = 0;
+				compteurVarLoc = 0;
+				compteurPara = 0;
 				break;
 
 
@@ -595,8 +602,8 @@ public class PtGen {
 			case 45: // decproc fin (Retour + Nettoyage de table)
 				compteurVarLoc -= 2;
 				compteurVarLoc += compteurConstLoc; //Pour enlever les constantes déclarer localement de la table
-				po.produire(RETOUR);
-				po.produire(compteurPara);
+				//po.produire(RETOUR);
+				//po.produire(compteurPara);
 				for(int i = compteurVarLoc; i>0;i-- ){
 					tabSymb[bc].code = -1;
 					bc++;
@@ -609,7 +616,7 @@ public class PtGen {
 				break;
 
 			case 46: // Modif proc tab Symb (Ajout des paramètres)
-				//tabSymb[bc - 1].info = compteurPara;
+				tabSymb[bc - 1].info = compteurPara;
 				compteurVarLoc = compteurPara + 2;
 				break;
 
