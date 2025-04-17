@@ -507,6 +507,34 @@ public class PtGen {
 				} else {
 					UtilLex.messErr("Erreur de type de Ident : Ident inconnu");
 				}
+
+
+
+				tCour = tabSymb[ident_tmp].type;
+				if(tCour == ENT) {
+					po.produire(LIRENT);
+				} else if(tCour == BOOL) {
+					po.produire(LIREBOOL);
+				}
+				else{
+					UtilLex.messErr("Erreur : Type neutre détecté");
+				}
+
+				if(tabSymb[ident_tmp].categorie == VARLOCALE) {
+					po.produire(AFFECTERL);
+					po.produire(tabSymb[ident_tmp].info);
+					po.produire(0);
+				} else if(tabSymb[ident_tmp].categorie == PARAMMOD) {
+					po.produire(AFFECTERL);
+					po.produire(tabSymb[ident_tmp].info);
+					po.produire(1);
+				} else if (tabSymb[ident_tmp].categorie == VARGLOBALE){
+					po.produire(AFFECTERG);
+					po.produire(tabSymb[ident_tmp].info);
+				}
+				else {
+					UtilLex.messErr("Erreur : (lire) lecture du type impossible");
+				}
 				break;
 
 			case 31: // Début Si : mettre bsifaux + empiler pile rep
