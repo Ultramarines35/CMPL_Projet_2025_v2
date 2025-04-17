@@ -199,7 +199,7 @@ public class PtGen {
 	static int val_tmp;
 	static boolean reserver;
 	static int tmp_boucle;
-	static int compteur_effixe;
+	static int appel_nb_para;
 	/**
 	 * initialisations A COMPLETER SI BESOIN
 	 * -------------------------------------
@@ -227,7 +227,7 @@ public class PtGen {
 		compteurPara = 0;
 		compteurVarLoc = 0;
 		reserver = false;
-		compteur_effixe = 0;
+		appel_nb_para = 0;
 	} // initialisations
 
 	/**
@@ -633,22 +633,28 @@ public class PtGen {
 			case 49: // Appel des procédures (effmods)
 			int tmp_presentIdent = presentIdent(bc);
 				if (tmp_presentIdent != 0){
-					if(tabSymb[tmp_presentIdent].categorie == VARGLOBALE){
-						po.produire(EMPILERADG);
-						po.produire(tmp_presentIdent);
+					affect_ident_tmp++;
+					appel_nb_para--;
+					if (tabSymb[affect_ident_tmp].type != tCour && tabSymb[affect_ident_tmp].categorie != PARAMMOD) {
+						UtilLex.messErr("Mauvais type du  paramfixe en entrée de l'appel de la fonction");
 					}
-					else if (tabSymb[tmp_presentIdent].categorie == VARLOCALE){
-						po.produire(EMPILERADL);
-						po.produire(tmp_presentIdent);
-						po.produire(0);
-					}
-					else if (tabSymb[tmp_presentIdent].categorie == PARAMMOD){
-						po.produire(EMPILERADL);
-						po.produire(tmp_presentIdent);
-						po.produire(1);
-					}
-					else{
-						UtilLex.messErr("Erreur de type de Ident : Passage en Effixes Invalide");
+					switch(tabSymb[tmp_presentIdent].categorie){
+						case VARGLOBALE:
+							po.produire(EMPILERADG);
+							po.produire(tmp_presentIdent);
+							break;
+						case VARLOCALE:
+							po.produire(EMPILERADL);
+							po.produire(tmp_presentIdent);
+							po.produire(0);
+							break;
+						case PARAMMOD:
+							po.produire(EMPILERADL);
+							po.produire(tmp_presentIdent);
+							po.produire(1);
+							break;
+						default:
+							UtilLex.messErr("Erreur de type de Ident : Passage en Effixes Invalide");
 					}
 				}
 				else{
@@ -660,40 +666,37 @@ public class PtGen {
 				tCour = BOOL;
 				vCour = 0;
 				break;
-			
+
 			case 51:	//correction de vrai
 				tCour = BOOL;
 				vCour = 1;
 				break;
-			
-			case 52:
-				int nb_para = tabSymb[affect_ident_tmp + 1].info;
-			break;
 
-			case 53 : //Verifie param effixe bon type
-				if (compteur_effixe != 0 ) {
-					if (tabSymb[affect_ident_tmp].type != tCour && tabSymb[affect_ident_tmp].categorie != VARLOCALE) {
-						UtilLex.messErr("Mauvais type en entrée de l'appel de la fonction : " + tabSymb[affect_ident_tmp].type + " et " + tCour);
-					} 
+			case 52 : //Verifie param effixe bon type
+			System.out.println("FEUR" + appel_nb_para);
+				if (appel_nb_para > 0 ) {
+					if (tabSymb[affect_ident_tmp].type != tCour && tabSymb[affect_ident_tmp].categorie != PARAMFIXE) {
+						UtilLex.messErr("Mauvais type du  paramfixe en entrée de l'appel de la fonction");
+					}
 					affect_ident_tmp++;
-					compteur_effixe--;
+					appel_nb_para--;
 				} else {
-					UtilLex.messErr("Trop de paramètres");
+					UtilLex.messErr("Trop d'élément passé en paramètres");
 				}
-				
 			break;
-			case 54 : //Verifie param effixe bon nombre	
-				if (compteur_effixe != 0) {
+			
+			case 53 : //Verifie param effixe bon nombre
+				if (appel_nb_para > 0) {
 					UtilLex.messErr("Pas assez de paramètre dans effixe");
 				}
 			break;
 
-			case 55 : //Setup et se place sur le premier param
-				affect_ident_tmp++;
-				nb_para = tabSymb[affect_ident_tmp].info;
-				compteur_effixe = nb_para;
-				affect_ident_tmp++;
+			case 54 : //Setup et se place sur le premier param
+				System.out.println("FEUR" + tabSymb[affect_ident_tmp+1].categorie);
+				appel_nb_para = tabSymb[affect_ident_tmp+1].info;
+				affect_ident_tmp+=2;
 			break;
+
 			case 254:
 				po.produire(ARRET);
 				break;
