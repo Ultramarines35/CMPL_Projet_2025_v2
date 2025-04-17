@@ -200,6 +200,7 @@ public class PtGen {
 	static boolean reserver;
 	static int tmp_boucle;
 	static int appel_nb_para;
+	static int nb_para_restants;
 	/**
 	 * initialisations A COMPLETER SI BESOIN
 	 * -------------------------------------
@@ -228,6 +229,7 @@ public class PtGen {
 		compteurVarLoc = 0;
 		reserver = false;
 		appel_nb_para = 0;
+		nb_para_restants = 0;
 	} // initialisations
 
 	/**
@@ -572,13 +574,13 @@ public class PtGen {
 				break;
 
 			case 41:
-				vCour = UtilLex.valEnt;
+				//vCour = UtilLex.valEnt;
 				po.produire(EMPILER);
 				po.produire(vCour);
 				break;
 
 			case 42 ://Début proc
-				placeIdent(UtilLex.numIdCourant, PROC, NEUTRE, 0);
+				placeIdent(UtilLex.numIdCourant, PROC, NEUTRE, -10);
 				placeIdent(-1, PRIVEE, NEUTRE, 0);
 				
 				bc = it + 1;
@@ -627,16 +629,15 @@ public class PtGen {
 
 
 			case 48:// Modification bincond pour sauter les procs
-			//po.modifier(pileRep.depiler(), po.getIpo()+1);
-			break;
+				po.modifier(pileRep.depiler(),9999);
+				break;
 
 			case 49: // Appel des procédures (effmods)
-			int tmp_presentIdent = presentIdent(bc);
+				int tmp_presentIdent = presentIdent(bc);
+				afftabSymb();
 				if (tmp_presentIdent != 0){
-					affect_ident_tmp++;
-					appel_nb_para--;
-					if (tabSymb[affect_ident_tmp].type != tCour && tabSymb[affect_ident_tmp].categorie != PARAMMOD) {
-						UtilLex.messErr("Mauvais type du  paramfixe en entrée de l'appel de la fonction");
+					if (tabSymb[nb_para_restants].type != tabSymb[tmp_presentIdent].type  || tabSymb[nb_para_restants].categorie != PARAMMOD) {
+						UtilLex.messErr("Mauvais type du  parammod en entrée de l'appel de la fonction");
 					}
 					switch(tabSymb[tmp_presentIdent].categorie){
 						case VARGLOBALE:
@@ -654,12 +655,14 @@ public class PtGen {
 							po.produire(1);
 							break;
 						default:
-							UtilLex.messErr("Erreur de type de Ident : Passage en Effixes Invalide");
+							UtilLex.messErr("Erreur de type de Ident : Passage en PARAMMOD Invalide");
 					}
 				}
 				else{
-					UtilLex.messErr("Erreur de type de Ident : Passage en Effixes impossible, Ident inconnu");
+					UtilLex.messErr("Erreur de type de Ident : Passage en PARAMMOD impossible, Ident inconnu");
 				}
+				nb_para_restants++;
+				appel_nb_para--;
 				break;
 
 			case 50:	//correction de faux
@@ -675,10 +678,10 @@ public class PtGen {
 			case 52 : //Verifie param effixe bon type
 			System.out.println("FEUR" + appel_nb_para);
 				if (appel_nb_para > 0 ) {
-					if (tabSymb[affect_ident_tmp].type != tCour && tabSymb[affect_ident_tmp].categorie != PARAMFIXE) {
-						UtilLex.messErr("Mauvais type du  paramfixe en entrée de l'appel de la fonction");
+					if (tabSymb[nb_para_restants].type != tCour || tabSymb[nb_para_restants].categorie != PARAMFIXE) {
+						UtilLex.messErr("Mauvais type du PARAMFIXE en entrée de l'appel de la fonction");
 					}
-					affect_ident_tmp++;
+					nb_para_restants++;
 					appel_nb_para--;
 				} else {
 					UtilLex.messErr("Trop d'élément passé en paramètres");
@@ -689,12 +692,23 @@ public class PtGen {
 				if (appel_nb_para > 0) {
 					UtilLex.messErr("Pas assez de paramètre dans effixe");
 				}
+				po.produire(APPEL);
+				po.produire(tabSymb[affect_ident_tmp].info);
+				po.produire(tabSymb[affect_ident_tmp+1].info);
 			break;
 
 			case 54 : //Setup et se place sur le premier param
-				System.out.println("FEUR" + tabSymb[affect_ident_tmp+1].categorie);
-				appel_nb_para = tabSymb[affect_ident_tmp+1].info;
-				affect_ident_tmp+=2;
+				nb_para_restants = affect_ident_tmp;
+				System.out.println("FEUR" + tabSymb[nb_para_restants+1].categorie);
+				appel_nb_para = tabSymb[nb_para_restants+1].info;
+				nb_para_restants+=2;
+			break;
+
+
+			case 55:
+				po.produire(BINCOND);
+				po.produire(0);
+				pileRep.empiler(po.getIpo());
 			break;
 
 			case 254:

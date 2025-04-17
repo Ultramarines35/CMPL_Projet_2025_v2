@@ -1,59 +1,63 @@
 FICHIER TestsProjet\polyP12-exo-deuxprocs.gen : 
 
    1  reserver        1
-   3  reserver        1
-   5  empiler         3
-   7  affecterl       4   0
-  10  empiler         0
-  12  affecterl       0   1
-  15  contenul        4   0
-  18  empiler         0
-  20  sup       
-  21  bsifaux        48
-  23  lirent    
-  24  affecterl       3   0
-  27  contenul        0   1
-  30  contenul        3   0
-  33  add       
-  34  affecterl       0   1
-  37  contenul        4   0
-  40  empiler         1
-  42  sous      
-  43  affecterl       4   0
-  46  bincond        21
-  48  arret     
-  49  reserver        2
-  51  contenul        0   0
-  54  affecterl       5   0
-  57  empiler         0
-  59  affecterl       6   0
-  62  contenul        5   0
-  65  empiler         0
-  67  sup       
-  68  bsifaux       102
-  70  empileradl     10   0
-  73  contenul        4   0
-  76  contenul        1   0
-  79  supeg     
-  80  bsifaux        91
-  82  contenul        6   0
-  85  empiler         1
-  87  add       
-  88  affecterl       6   0
-  91  contenul        5   0
-  94  empiler         1
-  96  sous      
-  97  affecterl       5   0
- 100  bincond        68
- 102  contenul        6   0
- 105  affecterg       0
- 107  arret     
- 108  lirent    
- 109  affecterg       0
- 111  contenug        0
- 113  empiler         1
- 115  add       
- 116  empiler        10
+   3  bincond         0
+   5  reserver        1
+   7  empiler         3
+   9  affecterl       4   0
+  12  empiler         0
+  14  affecterl       0   1
+  17  contenul        4   0
+  20  empiler         0
+  22  sup       
+  23  bsifaux        50
+  25  lirent    
+  26  affecterl       3   0
+  29  contenul        0   1
+  32  contenul        3   0
+  35  add       
+  36  affecterl       0   1
+  39  contenul        4   0
+  42  empiler         1
+  44  sous      
+  45  affecterl       4   0
+  48  bincond        23
+  50  arret     
+  51  bincond      9999
+  53  reserver        2
+  55  contenul        0   0
+  58  affecterl       5   0
+  61  empiler         0
+  63  affecterl       6   0
+  66  contenul        5   0
+  69  empiler         0
+  71  sup       
+  72  bsifaux       109
+  74  empileradl     10   0
+  77  appel         -10   1
+  80  contenul        4   0
+  83  contenul        1   0
+  86  supeg     
+  87  bsifaux        98
+  89  contenul        6   0
+  92  empiler         1
+  94  add       
+  95  affecterl       6   0
+  98  contenul        5   0
+ 101  empiler         1
+ 103  sous      
+ 104  affecterl       5   0
+ 107  bincond        72
+ 109  contenul        6   0
+ 112  affecterg       0
+ 114  arret     
+ 115  lirent    
+ 116  affecterg       0
  118  contenug        0
- 120  ecrent    
- 121  arret     
+ 120  empiler         1
+ 122  add       
+ 123  empiler        10
+ 125  appel         -10   2
+ 128  contenug        0
+ 130  ecrent    
+ 131  arret     
