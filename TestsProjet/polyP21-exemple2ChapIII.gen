@@ -1,0 +1,27 @@
+FICHIER TestsProjet/polyP21-exemple2ChapIII.gen : 
+
+   1  reserver        4
+   3  bincond         0
+   5  reserver       20
+   7  empiler         0
+   9  affecterl       4   0
+  12  contenul        0   0
+  15  affecterl       1   1
+  18  arret     
+  19  bincond      9999
+  21  reserver        1
+  23  empiler         2
+  25  empileradl      9   0
+  28  appel         -10   2
+  31  contenul        3   0
+  34  empileradl      8   1
+  37  appel         -10   2
+  40  contenul        0   1
+  43  empileradl      9   0
+  46  appel         -10   2
+  49  arret     
+  50  empileradg      1
+  52  appel         -10   1
+  55  contenug        0
+  57  ecrent    
+  58  arret     

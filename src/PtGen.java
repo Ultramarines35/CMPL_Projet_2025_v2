@@ -201,6 +201,7 @@ public class PtGen {
 	static int tmp_boucle;
 	static int appel_nb_para;
 	static int nb_para_restants;
+	static int placementPROC;
 	/**
 	 * initialisations A COMPLETER SI BESOIN
 	 * -------------------------------------
@@ -581,9 +582,10 @@ public class PtGen {
 
 			case 42 ://Début proc
 				placeIdent(UtilLex.numIdCourant, PROC, NEUTRE, -10);
+				placementPROC = it;
 				placeIdent(-1, PRIVEE, NEUTRE, 0);
-				
 				bc = it + 1;
+				
 				compteurConstLoc = 0;
 				compteurVarLoc = 0;
 				compteurPara = 0;
@@ -623,12 +625,17 @@ public class PtGen {
 				break;
 
 			case 47: //Reservation des varLocales
+				// C'est ici que nous devons modifier le PROC dans la tabSymb
+				System.out.println("Modification de PROC. Variable placementPROC : " + placementPROC + ". Ipo actuel : " + po.getIpo());
+				tabSymb[placementPROC].info = po.getIpo()+1;
 				po.produire(RESERVER);
 				po.produire(compteurPara);
 				break;
 
 
 			case 48:// Modification bincond pour sauter les procs
+			// Point de génération vestigial, nous n'avons pas besoin de deux empiler
+				System.out.println( "-------------------------------- Nous ne sommes pas censés passer par la");
 				po.modifier(pileRep.depiler(),9999);
 				break;
 
@@ -705,10 +712,19 @@ public class PtGen {
 			break;
 
 
-			case 55:
+			case 55: // Bincond decproc
 				po.produire(BINCOND);
 				po.produire(0);
 				pileRep.empiler(po.getIpo());
+			break;
+			
+			case 56 : //Modification BINCOND originel (Proc) 
+				if (bc== 1) { //Si nous ne sommes pas dans un PROC alors
+					System.out.println("Nous avons modifiés le Bincond pour l'adresse :" + po.getIpo());
+					// po.modifier(pileRep.depiler(), po.getIpo());
+					po.modifier(4, po.getIpo());
+				}
+				
 			break;
 
 			case 254:
