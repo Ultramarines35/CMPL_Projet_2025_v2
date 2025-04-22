@@ -41,7 +41,7 @@ unite  :   unitprog {PtGen.pt(255);} EOF
 unitprog
   : 'programme' ident ':'  
      declarations  
-     corps { System.out.println("succes, arret de la compilation "); }
+     corps {PtGen.pt(254);} { System.out.println("succes, arret de la compilation "); }
   ;
   
 unitmodule
@@ -84,7 +84,7 @@ ptvg  : ';'
   |
   ;
   
-corps : 'debut' {PtGen.pt(56);} instructions 'fin' {PtGen.pt(254);}
+corps : 'debut' {PtGen.pt(56);} instructions 'fin'
   ;
   
 parfixe: 'fixe' '(' pf ( ';' pf)* ')'
@@ -216,8 +216,4 @@ COMMENT
 
 // commentaires sur plusieurs lignes
 ML_COMMENT    :   '/*' (options {greedy=false;} : .)* '*/' {$channel=HIDDEN;}
-    ;	   
-
-
-
-	   
+    ;
