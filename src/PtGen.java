@@ -197,7 +197,6 @@ public class PtGen {
 	static int ident_tmp;
 	static int affect_ident_tmp;
 	static int val_tmp;
-	static boolean reserver;
 	static int tmp_boucle;
 	static int appel_nb_para;
 	static int nb_para_restants;
@@ -228,7 +227,6 @@ public class PtGen {
 		compteurVar = 0;
 		compteurPara = 0;
 		compteurVarLoc = 0;
-		reserver = false;
 		appel_nb_para = 0;
 		nb_para_restants = 0;
 	} // initialisations
@@ -240,7 +238,6 @@ public class PtGen {
 	 * @param numGen : numero du point de generation a executer
 	 */
 	public static void pt(int numGen) {
-		System.out.println(numGen);
 		switch (numGen) {
 			case 0:
 				initialisations();
@@ -297,7 +294,7 @@ public class PtGen {
 				}
 				break;
 
-			case 8: // lecture d'une valeur entière positive ou une valeur booléene
+			case 8: // lecture d'une valeur entière positive ou nul
 				vCour = UtilLex.valEnt;
 				break;
 
@@ -306,42 +303,52 @@ public class PtGen {
 				break;
 
 			case 10: // Reservation des Variables globales
-				po.produire(RESERVER);
-				po.produire(compteurVar);
-				break;
+					if (compteurVar > 0){
+						po.produire(RESERVER);
+						po.produire(compteurVar);
+					}
+					break;
 
 			case 11: // lecture d'un ident
 				ident_tmp = presentIdent(1);
 				if (ident_tmp != 0) {
-					//1er partie, on génère de quoi mettre l'ident dans la pile : contenug/contenul/empiler
-					int tmp = tabSymb[ident_tmp].categorie;
-					if (tmp == VARGLOBALE) {
-						po.produire(CONTENUG);
-						po.produire(tabSymb[ident_tmp].info);
+				//on génère de quoi mettre l'ident dans la pile : contenug/contenul/empiler
+					switch(tabSymb[ident_tmp].categorie){
+						case VARGLOBALE:
+							po.produire(CONTENUG);
+							po.produire(tabSymb[ident_tmp].info);
+							break;
+						case VARLOCALE:
+						case PARAMFIXE:
+							po.produire(CONTENUL);
+							po.produire(tabSymb[ident_tmp].info);
+							po.produire(0);
+							break;
+						case PARAMMOD:
+							po.produire(CONTENUL);
+							po.produire(tabSymb[ident_tmp].info);
+							po.produire(1);
+						break;
+						case CONSTANTE:
+							po.produire(EMPILER);
+							po.produire(tabSymb[ident_tmp].info);
+							break;
+						default:
+							UtilLex.messErr("Erreur de la catégorie de Ident : " + tabSymb[ident_tmp].categorie);
+
+
 					}
-					else if (tmp == VARLOCALE || tmp == PARAMFIXE) {
-						po.produire(CONTENUL);
-						po.produire(tabSymb[ident_tmp].info);
-						po.produire(0);
-					}
-					else if (tmp == PARAMMOD) {
-						po.produire(CONTENUL);
-						po.produire(tabSymb[ident_tmp].info);
-						po.produire(1);
-					}
-					else if (tmp == CONSTANTE) {
-						po.produire(EMPILER);
-						po.produire(tabSymb[ident_tmp].info);
-					}
-					else {
-						UtilLex.messErr("Erreur de type de Ident : " + tabSymb[ident_tmp].categorie);
-					}
-					if (tabSymb[ident_tmp].type == ENT) {
-						tCour = ENT;
-					} else if (tabSymb[ident_tmp].type == BOOL) {
-						tCour = BOOL;
-					} else {
-						UtilLex.messErr("Erreur de type de Ident : Type interdit");
+					//On modifie tCour en conséquence (on ne peut pas avoir de procédure)
+					switch(tabSymb[ident_tmp].type   ){
+						case ENT:
+							tCour = ENT;
+						break;
+						case BOOL:
+							tCour = BOOL;
+						break;
+						default:
+							UtilLex.messErr("Erreur de type de Ident : Type neutre interdit");
+						break;
 					}
 					ident_tmp = tabSymb[ident_tmp].info;
 				} else {
@@ -349,14 +356,14 @@ public class PtGen {
 				}
 				break;
 
-			case 12: // Production lirent/lirebool (lire)
+			case 12: // Production ecrent/ecrbool (ecrire)
 				if (tCour == BOOL) {
 					po.produire(ECRBOOL);
 				} else if (tCour == ENT) {
 					po.produire(ECRENT);
 
 				} else {
-					UtilLex.messErr("Erreur de type de Ident : Ident inconnu");
+					UtilLex.messErr("Erreur de type pour ecrire : type neutre détecté");
 				}
 				break;
 
@@ -368,11 +375,13 @@ public class PtGen {
 				}
 				break;
 
-			case 14:
+			case 14://Affectation
+					//affect_ident_tmp est l'ident récupéré et est la où est stocker l'affectation
 				if(tabSymb[affect_ident_tmp].type != tCour){
 					UtilLex.messErr(tCour + " attendu");
 				}
 				else{
+					//Test dans proc
 					if(bc > 1){
 						switch(tabSymb[affect_ident_tmp].categorie){
 							case VARGLOBALE:
@@ -396,11 +405,12 @@ public class PtGen {
 								UtilLex.messErr("Erreur : AFFOUAPPEL, ident est un paramfixe");
 								break;
 							default:
-								UtilLex.messErr("Erreur : AFFOUAPPEL,tabSymb indique que ident est def, ref ou privé");
+								UtilLex.messErr("Erreur : AFFOUAPPEL,tabSymb indique que affect_ident_tmp pointe vers def, ref ou privé");
 								break;
 						}
 					}
 					else{
+						//Test hors proc
 						if(tabSymb[affect_ident_tmp].categorie == VARGLOBALE){
 							po.produire(AFFECTERG);
 							po.produire(tabSymb[affect_ident_tmp].info);
@@ -442,10 +452,6 @@ public class PtGen {
 				tCour = BOOL;
 				break;
 
-			case 21:
-				reserver = true;
-				break;
-
 			case 22:
 				po.produire(ADD);
 				tCour = ENT;
@@ -459,10 +465,6 @@ public class PtGen {
 			case 24:
 				po.produire(MUL);
 				tCour = ENT;
-				break;
-
-			case 25:
-				verifEnt();
 				break;
 
 			case 26:
@@ -485,7 +487,7 @@ public class PtGen {
 				tCour = BOOL;
 				break;
 
-			case 30:
+			case 30:// Production lirent/ Lirebool (Lire)
 				ident_tmp = presentIdent(bc);
 				tCour = tabSymb[ident_tmp].type;
 				if(tCour == ENT) {
@@ -622,8 +624,11 @@ public class PtGen {
 			case 47: //Reservation des varLocales
 				// C'est ici que nous devons modifier le PROC dans la tabSymb
 				tabSymb[placementPROC].info = po.getIpo()+1;
-				po.produire(RESERVER);
-				po.produire(compteurVarLoc - (compteurPara + 2));
+				int reserver_varLoc = compteurVarLoc - (compteurPara + 2);
+				if(reserver_varLoc > 0){
+					po.produire(RESERVER);
+					po.produire(reserver_varLoc);
+				}
 				break;
 
 			case 49: // Appel des procédures (effmods)

@@ -1,4 +1,4 @@
-// $ANTLR 3.5.2 src\\projet.g 2025-04-23 15:47:44
+// $ANTLR 3.5.2 src\\projet.g 2025-04-23 17:12:28
            
 import java.io.IOException;
 import java.io.DataInputStream;
@@ -2360,7 +2360,7 @@ public class projetParser extends Parser {
 					primaire();
 					state._fsp--;
 
-					PtGen.pt(25);
+					PtGen.pt(2);
 					PtGen.pt(26);
 					}
 					break;

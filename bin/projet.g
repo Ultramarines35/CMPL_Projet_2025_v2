@@ -50,7 +50,7 @@ unitmodule
   ;
   
 declarations
-  : partiedef? partieref? consts? vars? {PtGen.pt(10);} decprocs? {PtGen.pt(21);}
+  : partiedef? partieref? consts? vars? {PtGen.pt(10);} decprocs?
   ;
   
 partiedef
@@ -171,7 +171,7 @@ exp4  : exp5
   
 exp5  : primaire
         (   {PtGen.pt(2);}  '*'   primaire {PtGen.pt(2);} {PtGen.pt(24);}
-          | {PtGen.pt(2);} 'div'   primaire {PtGen.pt(25);} {PtGen.pt(26);}
+          | {PtGen.pt(2);} 'div'   primaire {PtGen.pt(2);} {PtGen.pt(26);}
         )*
   ;
   
