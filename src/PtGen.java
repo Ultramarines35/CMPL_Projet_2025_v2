@@ -490,54 +490,53 @@ public class PtGen {
 			case 30:// Production lirent/ Lirebool (Lire)
 				ident_tmp = presentIdent(bc);
 				tCour = tabSymb[ident_tmp].type;
-				if(tCour == ENT) {
-					po.produire(LIRENT);
-				} else if(tCour == BOOL) {
-					po.produire(LIREBOOL);
+				switch(tCour){
+					case ENT:
+						po.produire(LIRENT);
+					break;
+					case BOOL:
+						po.produire(LIREBOOL);
+					break;
+					default:
+						UtilLex.messErr("Erreur de type de Ident : Type neutre interdit");
+					break;
 				}
-				else{
-					UtilLex.messErr("Erreur : Type neutre détecté");
+				switch(tabSymb[ident_tmp].categorie){
+					case VARLOCALE:
+						po.produire(AFFECTERL);
+						po.produire(tabSymb[ident_tmp].info);
+						po.produire(0);
+						break;
+					case PARAMMOD:
+						po.produire(AFFECTERL);
+						po.produire(tabSymb[ident_tmp].info);
+						po.produire(1);
+						break;
+					case VARGLOBALE:
+						po.produire(AFFECTERG);
+						po.produire(tabSymb[ident_tmp].info);
+						break;
+					default:
+						UtilLex.messErr("Erreur : (lire) lecture du type impossible");
+						break;
 				}
-				if(tabSymb[ident_tmp].categorie == VARLOCALE) {
-					po.produire(AFFECTERL);
-					po.produire(tabSymb[ident_tmp].info);
-					po.produire(0);
-				} else if(tabSymb[ident_tmp].categorie == PARAMMOD) {
-					po.produire(AFFECTERL);
-					po.produire(tabSymb[ident_tmp].info);
-					po.produire(1);
-				} else if (tabSymb[ident_tmp].categorie == VARGLOBALE){
-					po.produire(AFFECTERG);
-					po.produire(tabSymb[ident_tmp].info);
-				}
-				else {
-					UtilLex.messErr("Erreur : (lire) lecture du type impossible");
-				}
-				break;
 
-			case 31: // Début Si : mettre bsifaux + empiler pile rep
+			case 31: // bsifaux si,ttq et cond
 				po.produire(BSIFAUX);
 				po.produire(0);
 				pileRep.empiler(po.getIpo());
 				break;
 
-			case 32: // Avant instr sinon
+			case 32: // Résout bsifaux si et produit bincond pour le alors
 				po.produire(BINCOND);
 				po.produire(0);
-				int tmp = po.getIpo();
+				int ipo_bincond = po.getIpo();
 				po.modifier(pileRep.depiler(), po.getIpo() + 1);
-				pileRep.empiler(tmp);
+				pileRep.empiler(ipo_bincond);
 				break;
 
-			case 33: // Résout bincond si y'a alors, sinon résout bsifaux
+			case 33: // Résout bincond du alors si y a un  sinon, sinon résout bsifaux du si
 				po.modifier(pileRep.depiler(), po.getIpo() + 1);
-				break;
-
-			case 34:
-				po.produire(BSIFAUX);
-				po.produire(0);
-				pileRep.empiler(po.getIpo());
-
 				break;
 
 			case 35:
