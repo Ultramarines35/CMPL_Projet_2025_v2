@@ -606,8 +606,8 @@ public class PtGen {
 			case 45: // decproc fin (Retour + Nettoyage de table)
 				compteurVarLoc -= 2;
 				compteurVarLoc += compteurConstLoc; //Pour enlever les constantes déclarer localement de la table
-				//po.produire(RETOUR);
-				//po.produire(compteurPara);
+				po.produire(RETOUR);
+				po.produire(compteurPara);
 				for(int i = compteurVarLoc; i>0;i-- ){
 					tabSymb[bc].code = -1;
 					bc++;
@@ -629,7 +629,7 @@ public class PtGen {
 				System.out.println("Modification de PROC. Variable placementPROC : " + placementPROC + ". Ipo actuel : " + po.getIpo());
 				tabSymb[placementPROC].info = po.getIpo()+1;
 				po.produire(RESERVER);
-				po.produire(compteurPara);
+				po.produire(compteurVarLoc - (compteurPara + 2));
 				break;
 
 
