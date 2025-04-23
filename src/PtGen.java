@@ -311,7 +311,7 @@ public class PtGen {
 				break;
 
 			case 11: // lecture d'un ident
-				ident_tmp = presentIdent(bc);
+				ident_tmp = presentIdent(1);
 				if (ident_tmp != 0) {
 					//1er partie, on génère de quoi mettre l'ident dans la pile : contenug/contenul/empiler
 					int tmp = tabSymb[ident_tmp].categorie;
@@ -541,7 +541,7 @@ public class PtGen {
 			case 35:
 				tmp_boucle = pileRep.depiler();
 				po.produire(BINCOND);
-				po.produire(tmp_boucle - 1);
+				po.produire(pileRep.depiler());
 				po.modifier(tmp_boucle, po.getIpo() + 1);
 				break;
 
@@ -660,12 +660,12 @@ public class PtGen {
 
 			case 50:	//correction de faux
 				tCour = BOOL;
-				vCour = 0;
+				vCour = FAUX;
 				break;
 
 			case 51:	//correction de vrai
 				tCour = BOOL;
-				vCour = 1;
+				vCour = VRAI;
 				break;
 
 			case 52 : //Verifie param effixe bon type
@@ -710,6 +710,10 @@ public class PtGen {
 					po.modifier(4, po.getIpo() + 1);
 				}
 				
+			break;
+
+			case 57:
+				pileRep.empiler(po.getIpo()+1);
 			break;
 
 			case 254:
