@@ -274,11 +274,9 @@ public class PtGen {
 
 						placeIdent(tmp_ident, VARGLOBALE, tCour, compteurVar);
 						compteurVar++;
-						afftabSymb();
 					} else {
 						placeIdent(tmp_ident, VARLOCALE, tCour, compteurVarLoc);
 						compteurVarLoc++;
-						afftabSymb();
 					}
 				}
 				break;
@@ -364,7 +362,6 @@ public class PtGen {
 
 			case 13: // Empiler ident pour l'affectation
 				// checker si pas constante et ils sont de meme type
-				afftabSymb();
 				affect_ident_tmp = presentIdent(1);
 				if(affect_ident_tmp == 0){
 					UtilLex.messErr("Ident n'est pas dans la table");
@@ -377,31 +374,30 @@ public class PtGen {
 				}
 				else{
 					if(bc > 1){
-						if(tabSymb[affect_ident_tmp].categorie == VARGLOBALE){
-							po.produire(AFFECTERG);
-							po.produire(tabSymb[affect_ident_tmp].info);
-						}
-						else if (tabSymb[affect_ident_tmp].categorie == VARLOCALE){
-							po.produire(AFFECTERL);
-							po.produire(tabSymb[affect_ident_tmp].info);
-							po.produire(0);
-						}
-						else if (tabSymb[affect_ident_tmp].categorie == PARAMMOD){
-							po.produire(AFFECTERL);
-							po.produire(tabSymb[affect_ident_tmp].info);
-							po.produire(1);
-						}
-						else if (tabSymb[affect_ident_tmp].categorie == PROC) {
-							System.out.println("mettre un int ici pour recuperer l'indice de la PROC");
-						}
-						else if (tabSymb[affect_ident_tmp].categorie == CONSTANTE){
-							UtilLex.messErr("Erreur : AFFOUAPPEL, ident est une constante");
-						}
-						else if (tabSymb[affect_ident_tmp].categorie == PARAMFIXE){
-							UtilLex.messErr("Erreur : AFFOUAPPEL, ident est un paramfixe");
-						}
-						else {
-							UtilLex.messErr("Erreur : AFFOUAPPEL,tabSymb indique que ident est def, ref ou privé");
+						switch(tabSymb[affect_ident_tmp].categorie){
+							case VARGLOBALE:
+								po.produire(AFFECTERG);
+								po.produire(tabSymb[affect_ident_tmp].info);
+								break;
+							case VARLOCALE:
+								po.produire(AFFECTERL);
+								po.produire(tabSymb[affect_ident_tmp].info);
+								po.produire(0);
+								break;
+							case PARAMMOD:
+								po.produire(AFFECTERL);
+								po.produire(tabSymb[affect_ident_tmp].info);
+								po.produire(1);
+								break;
+							case CONSTANTE:
+								UtilLex.messErr("Erreur : AFFOUAPPEL, ident est une constante");
+								break;
+							case PARAMFIXE:
+								UtilLex.messErr("Erreur : AFFOUAPPEL, ident est un paramfixe");
+								break;
+							default:
+								UtilLex.messErr("Erreur : AFFOUAPPEL,tabSymb indique que ident est def, ref ou privé");
+								break;
 						}
 					}
 					else{
@@ -616,7 +612,6 @@ public class PtGen {
 				it -= compteurVarLoc;
 				compteurVarLoc = 0;
 				bc = 1;
-				afftabSymb();
 				break;
 
 			case 46: // Modif proc tab Symb (Ajout des paramètres)
@@ -626,22 +621,13 @@ public class PtGen {
 
 			case 47: //Reservation des varLocales
 				// C'est ici que nous devons modifier le PROC dans la tabSymb
-				System.out.println("Modification de PROC. Variable placementPROC : " + placementPROC + ". Ipo actuel : " + po.getIpo());
 				tabSymb[placementPROC].info = po.getIpo()+1;
 				po.produire(RESERVER);
 				po.produire(compteurVarLoc - (compteurPara + 2));
 				break;
 
-
-			case 48:// Modification bincond pour sauter les procs
-			// Point de génération vestigial, nous n'avons pas besoin de deux empiler
-				System.out.println( "-------------------------------- Nous ne sommes pas censés passer par la");
-				po.modifier(pileRep.depiler(),9999);
-				break;
-
 			case 49: // Appel des procédures (effmods)
 				int tmp_presentIdent = presentIdent(bc);
-				afftabSymb();
 				if (tmp_presentIdent != 0){
 					if (tabSymb[nb_para_restants].type != tabSymb[tmp_presentIdent].type  || tabSymb[nb_para_restants].categorie != PARAMMOD) {
 						UtilLex.messErr("Mauvais type du  parammod en entrée de l'appel de la fonction");
@@ -649,16 +635,16 @@ public class PtGen {
 					switch(tabSymb[tmp_presentIdent].categorie){
 						case VARGLOBALE:
 							po.produire(EMPILERADG);
-							po.produire(tmp_presentIdent);
+							po.produire(tabSymb[tmp_presentIdent].info);
 							break;
 						case VARLOCALE:
 							po.produire(EMPILERADL);
-							po.produire(tmp_presentIdent);
+							po.produire(tabSymb[tmp_presentIdent].info);
 							po.produire(0);
 							break;
 						case PARAMMOD:
 							po.produire(EMPILERADL);
-							po.produire(tmp_presentIdent);
+							po.produire(tabSymb[tmp_presentIdent].info);
 							po.produire(1);
 							break;
 						default:
@@ -683,7 +669,6 @@ public class PtGen {
 				break;
 
 			case 52 : //Verifie param effixe bon type
-			System.out.println("FEUR" + appel_nb_para);
 				if (appel_nb_para > 0 ) {
 					if (tabSymb[nb_para_restants].type != tCour || tabSymb[nb_para_restants].categorie != PARAMFIXE) {
 						UtilLex.messErr("Mauvais type du PARAMFIXE en entrée de l'appel de la fonction");
