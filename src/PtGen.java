@@ -707,7 +707,7 @@ public class PtGen {
 				if (bc== 1) { //Si nous ne sommes pas dans un PROC alors
 					System.out.println("Nous avons modifiés le Bincond pour l'adresse :" + po.getIpo());
 					// po.modifier(pileRep.depiler(), po.getIpo());
-					po.modifier(4, po.getIpo());
+					po.modifier(4, po.getIpo() + 1);
 				}
 				
 			break;
