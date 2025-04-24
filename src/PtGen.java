@@ -296,10 +296,12 @@ public class PtGen {
 
 			case 8: // lecture d'une valeur entière positive ou nul
 				vCour = UtilLex.valEnt;
+				tCour = ENT;
 				break;
 
 			case 9: // lecture d'un entier négatif
 				vCour = UtilLex.valEnt * (-1);
+				tCour = ENT;
 				break;
 
 			case 10: // Reservation des Variables globales
@@ -312,7 +314,10 @@ public class PtGen {
 			case 11: // lecture d'un ident
 				ident_tmp = presentIdent(1);
 				if (ident_tmp != 0) {
-				//on génère de quoi mettre l'ident dans la pile : contenug/contenul/empiler
+					//On actualise tCour
+					tCour = tabSymb[ident_tmp].type;
+
+					//on génère de quoi mettre l'ident dans la pile : contenug/contenul/empiler
 					switch(tabSymb[ident_tmp].categorie){
 						case VARGLOBALE:
 							po.produire(CONTENUG);
@@ -339,7 +344,7 @@ public class PtGen {
 
 					}
 					//On modifie tCour en conséquence (on ne peut pas avoir de procédure)
-					switch(tabSymb[ident_tmp].type   ){
+					switch(tabSymb[ident_tmp].type){
 						case ENT:
 							tCour = ENT;
 						break;
@@ -539,7 +544,7 @@ public class PtGen {
 				po.modifier(pileRep.depiler(), po.getIpo() + 1);
 				break;
 
-			case 35:
+			case 35: //Produit bincond et résout bsifaux ttq
 				tmp_boucle = pileRep.depiler();
 				po.produire(BINCOND);
 				po.produire(pileRep.depiler());
@@ -547,22 +552,22 @@ public class PtGen {
 				break;
 
 			// 36 - 39 COND
-			case 36:
+			case 36://Met le 0 en pile pour reconnaître le premier bincond
 				pileRep.empiler(0);
 				break;
 
-			case 37:// Cas BINCOND, on relie le nouveau BINCOND à l'adresse de l'ancien BINCOND
+			case 37:// On relie le nouveau BINCOND à l'adresse de l'ancien BINCOND
 				po.produire(BINCOND);
 				po.modifier(pileRep.depiler(), po.getIpo() + 2);
 				po.produire(pileRep.depiler());
 				pileRep.empiler(po.getIpo());
 				break;
 
-			case 38:
+			case 38: // Résout le dernier bincond si pas de aut
 				po.modifier(pileRep.depiler(), po.getIpo() + 1);
 				break;
 
-			case 39:
+			case 39://Fin du cond, on résout les banchement des bincond
 				int ad_temp = pileRep.depiler();
 				while (ad_temp != 0) {
 					int temp = po.getElt(ad_temp);
@@ -572,7 +577,6 @@ public class PtGen {
 				break;
 
 			case 41:
-				//vCour = UtilLex.valEnt;
 				po.produire(EMPILER);
 				po.produire(vCour);
 				break;
@@ -621,7 +625,6 @@ public class PtGen {
 				break;
 
 			case 47: //Reservation des varLocales
-				// C'est ici que nous devons modifier le PROC dans la tabSymb
 				tabSymb[placementPROC].info = po.getIpo()+1;
 				int reserver_varLoc = compteurVarLoc - (compteurPara + 2);
 				if(reserver_varLoc > 0){
@@ -708,15 +711,14 @@ public class PtGen {
 			break;
 			
 			case 56 : //Modification BINCOND originel (Proc) 
-				if (bc== 1) { //Si nous ne sommes pas dans un PROC alors
+				if (bc == 1) { //Si nous ne sommes pas dans un PROC alors
 					System.out.println("Nous avons modifiés le Bincond pour l'adresse :" + po.getIpo());
-					// po.modifier(pileRep.depiler(), po.getIpo());
 					po.modifier(4, po.getIpo() + 1);
 				}
 				
 			break;
 
-			case 57:
+			case 57://Empile l'adresse avant l'expression du ttq pour le bincond
 				pileRep.empiler(po.getIpo()+1);
 			break;
 
@@ -724,8 +726,8 @@ public class PtGen {
 				po.produire(ARRET);
 				break;
 
-			case 255:
-				afftabSymb(); // affichage de la table des symboles en fin de compilation
+			case 255:// affichage de la table des symboles en fin de compilation et production des .obj et .gen 
+				afftabSymb();
 				po.constObj();
 				po.constGen();
 

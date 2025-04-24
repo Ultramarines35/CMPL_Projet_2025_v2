@@ -1,0 +1,49 @@
+FICHIER TestsProjet\polyP30-exo2b.gen : 
+
+   1  reserver        3
+   3  empiler         0
+   5  affecterg       0
+   7  empiler         0
+   9  affecterg       1
+  11  lirent    
+  12  affecterg       2
+  14  bsifaux         0
+  16  contenug        2
+  18  empiler        -1
+  20  diff      
+  21  bsifaux         0
+  23  contenug        2
+  25  empiler         0
+  27  inf       
+  28  contenug        2
+  30  empiler        20
+  32  sup       
+  33  ou        
+  34  bsifaux        38
+  36  bincond        68
+  38  contenug        2
+  40  empiler        10
+  42  inf       
+  43  bsifaux        54
+  45  contenug        0
+  47  empiler         1
+  49  add       
+  50  affecterg       0
+  52  bincond        68
+  54  contenug        2
+  56  empiler        10
+  58  supeg     
+  59  bsifaux        68
+  61  contenug        1
+  63  empiler         1
+  65  add       
+  66  affecterg       1
+  68  lirent    
+  69  affecterg       2
+  71  bsifaux        75
+  73  bincond        22
+  75  contenug        0
+  77  ecrent    
+  78  contenug        1
+  80  ecrent    
+  81  arret     

@@ -55,23 +55,23 @@ class projet {
 		System.out.println("PROJET DE COMPILATION version : " + PtGen.trinome);
 		System.out.println("----------------------------------------");
 		System.out.println();
-		
-		do 
+
+		do
 		 {
 			// lecture du nom de fichier en entree, sans son suffixe
-			System.out.println(); 
+			System.out.println();
 		    System.out.print("Donnez le nom du fichier que vous souhaitez compiler, sans suffixe :  (RC si termine) ");
 		    UtilLex.nomSource=Lecture.lireString();  // on fournit a UtilLex le nom SANS suffixe
 		    System.out.println();
-		    
+
 		    if (!UtilLex.nomSource.equals("")) {
 		    	nomSourceComplet = UtilLex.nomSource+".pro";
-		    	// traitement d'une compilation	 
+		    	// traitement d'une compilation
 		    	UneCompilation (nomSourceComplet);
-		    } 
+		    }
 		    System.out.println();
 		}
-		while (!UtilLex.nomSource.equals("")); 	
-		System.out.println("\n \n Merci pour votre patience, " + PtGen.trinome + ", et a bientot !!!");	
+		while (!UtilLex.nomSource.equals(""));
+		System.out.println("\n \n Merci pour votre patience, " + PtGen.trinome + ", et a bientot !!!");
 	} // main
 } // projet
